@@ -1,0 +1,15 @@
+services:
+  tilskud-sql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: tilskud-sql
+    ports:
+      - "14333:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Tilskud_2026!"
+      MSSQL_PID: "Express"
+    volumes:
+      - tilskud-sql-data:/var/opt/mssql
+
+volumes:
+  tilskud-sql-data:

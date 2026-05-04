@@ -1,19 +1,23 @@
 # Maven build outputs
-/target
+/migrerings-projekt/target
 
 # Node build outputs
-/frontend/node_modules
-/frontend/dist
+/migrerings-projekt/frontend/node_modules
+/migrerings-projekt/frontend/dist
+/migrerings-projekt/frontend/node
 
 # Local environment and tooling files
 .idea
 .vscode
 *.iml
 .DS_Store
+*.csproj.user
+/legacy-tilskud-dotnet/.vs
+/legacy-tilskud-dotnet/bin
+/legacy-tilskud-dotnet/obj
 
 # Git metadata
 .git
-.gitignore
 
 # Docker artifacts
 Dockerfile

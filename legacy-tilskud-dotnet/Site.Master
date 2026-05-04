@@ -1,0 +1,34 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.Master.cs" Inherits="LegacyTilskud.SiteMaster" %>
+<!DOCTYPE html>
+<html>
+<head runat="server">
+    <title>Tilskud Legacy</title>
+    <link href="Content/site.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="Scripts/legacy-ui.js"></script>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div class="legacy-shell">
+            <header class="topbar">
+                <div>
+                    <a class="brand" href="Default.aspx">Tilskud Legacy</a>
+                    <span class="brand-subtitle">kommunal sagsbehandling</span>
+                </div>
+                <asp:Panel ID="pnlAuthenticated" runat="server" CssClass="topbar-user">
+                    <asp:Literal ID="litUser" runat="server" />
+                    <asp:HyperLink ID="lnkLogout" runat="server" NavigateUrl="~/Logout.aspx" Text="Log ud" CssClass="logout-link" />
+                </asp:Panel>
+            </header>
+            <nav class="main-nav">
+                <asp:HyperLink runat="server" NavigateUrl="~/Default.aspx" Text="Ansogninger" />
+                <asp:HyperLink runat="server" NavigateUrl="~/ApplicationEdit.aspx" Text="Ny ansogning" />
+                <asp:HyperLink runat="server" NavigateUrl="~/ReportStatus.aspx" Text="Statusrapport" />
+            </nav>
+            <main class="content">
+                <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+            </main>
+        </div>
+    </form>
+</body>
+</html>

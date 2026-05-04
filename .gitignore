@@ -1,10 +1,16 @@
 # Maven
-/target
+/migrerings-projekt/target
 
 # Node
-/frontend/node_modules
-/frontend/dist
-/frontend/node
+/migrerings-projekt/frontend/node_modules
+/migrerings-projekt/frontend/dist
+/migrerings-projekt/frontend/node
+
+# ASP.NET / Visual Studio
+/legacy-tilskud-dotnet/.vs
+/legacy-tilskud-dotnet/bin
+/legacy-tilskud-dotnet/obj
+*.csproj.user
 
 # IDEs and editors
 /.idea
