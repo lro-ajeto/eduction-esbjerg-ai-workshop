@@ -1,5 +1,6 @@
 # Maven
 /migrerings-projekt/target
+/migrerings-projekt/.m2
 
 # Node
 /migrerings-projekt/frontend/node_modules
@@ -19,3 +20,7 @@
 
 # OS files
 .DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
