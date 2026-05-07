@@ -2,7 +2,21 @@
   "title": "Agentic AI workshop - screen-based migration quality flow",
   "validatedCodexCli": "0.128.0",
   "defaultSandbox": "workspace-write",
-  "defaultApproval": "never",
+  "runners": {
+    "default": "codex",
+    "codex": {
+      "executable": "codex",
+      "model": "gpt-5.5",
+      "sandbox": "workspace-write"
+    },
+    "claude": {
+      "executable": "claude",
+      "model": "sonnet",
+      "outputFormat": "stream-json",
+      "permissionMode": "acceptEdits",
+      "verbose": true
+    }
+  },
   "reviewLoop": [
     "03-generate-code",
     "04-generate-tests",
