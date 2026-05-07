@@ -2,12 +2,11 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
-import shutil
-import subprocess
 import sys
 from pathlib import Path
 from typing import Any
+
+from runners import create_runner, runner_names
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -92,22 +91,6 @@ def add_file_section(parts: list[str], title: str, path: Path) -> None:
         parts.append(f"# {title}: {path}\n\n{read_text(path).strip()}\n")
 
 
-def resolve_executable(name: str) -> str:
-    if os.name == "nt" and Path(name).suffix == "":
-        for candidate in (f"{name}.cmd", f"{name}.exe", f"{name}.bat", name):
-            resolved = shutil.which(candidate)
-            if resolved:
-                return resolved
-
-    resolved = shutil.which(name)
-    if resolved:
-        return resolved
-
-    raise SystemExit(
-        f"Could not find '{name}' on PATH. Try running 'where {name}' or install/login to Codex CLI."
-    )
-
-
 def build_prompt(
     workflow: dict[str, Any],
     agent: dict[str, Any],
@@ -153,37 +136,16 @@ def build_prompt(
     return "\n\n".join(parts).strip() + "\n"
 
 
-def codex_command(workflow: dict[str, Any]) -> list[str]:
-    return [
-        resolve_executable("codex"),
-        "exec",
-        "--cd",
-        str(REPO_ROOT),
-        "--sandbox",
-        workflow.get("defaultSandbox", "workspace-write"),
-        "--color",
-        "never",
-        "-",
-    ]
-
-
-def run_codex(workflow: dict[str, Any], prompt: str) -> int:
-    result = subprocess.run(
-        codex_command(workflow),
-        input=prompt,
-        cwd=str(REPO_ROOT),
-        text=True,
-        encoding="utf-8",
-        errors="replace",
-        check=False,
-    )
-    return result.returncode
-
-
 def main() -> int:
     parser = argparse.ArgumentParser(description="Start one workshop agent.")
     parser.add_argument("--agent", required=True, help="Agent id, e.g. 01 or 03-generate-code.")
     parser.add_argument("--screen", help="Screen id for screen-specific agents.")
+    parser.add_argument(
+        "--runner",
+        choices=runner_names(),
+        help="CLI backend. Defaults to workflow.json runners.default.",
+    )
+    parser.add_argument("--model", help="Override the model configured for the selected runner.")
     args = parser.parse_args()
 
     workflow = load_workflow()
@@ -201,7 +163,9 @@ def main() -> int:
         print(f"Screen: {screen['id']} - {screen.get('title', '')}")
 
     prompt = build_prompt(workflow, agent, screen)
-    return run_codex(workflow, prompt)
+    runner = create_runner(workflow, args.runner, REPO_ROOT, args.model)
+    print(f"Runner: {runner.name}")
+    return runner.run(prompt).exit_code
 
 
 if __name__ == "__main__":

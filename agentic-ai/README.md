@@ -61,6 +61,7 @@ Normalt skal du ikke ændre runneren:
 
 - `run-agent.cmd`
 - `scripts/run_agent.py`
+- `scripts/runners.py`
 
 ## 5. Kør agenterne
 
@@ -85,6 +86,20 @@ Kør derefter et enkelt skærmbillede manuelt:
 .\run-agent.cmd --agent 05 --screen <screen-id>
 ```
 
+Runneren bruger som standard `codex`, men kan også køre via Claude Code CLI:
+
+```powershell
+.\run-agent.cmd --runner codex --agent 03 --screen <screen-id>
+.\run-agent.cmd --runner claude --agent 03 --screen <screen-id>
+```
+
+Model kan sættes i `workflow.json` eller overrides for en enkelt kørsel:
+
+```powershell
+.\run-agent.cmd --runner codex --model gpt-5.5 --agent 03 --screen <screen-id>
+.\run-agent.cmd --runner claude --model sonnet --agent 03 --screen <screen-id>
+```
+
 Hvis review ikke er tilfreds, gentag:
 
 ```powershell
@@ -107,17 +122,42 @@ har:
 }
 ```
 
-## 6. Brug auditten
+Vigtige handoff-filer:
 
-Runneren skriver audit for agentkørsler. Brug auditten til at diskutere hvad der faktisk skete, ikke kun hvad agenten sagde.
-
-Vigtige filer:
-
-- `screens/<screen-id>/audit/agent-runs.jsonl`
+- `screens/<screen-id>/screen.json`
+- `screens/<screen-id>/forms/intake.md`
 - `screens/<screen-id>/review/review-status.json`
 - `screens/<screen-id>/work-products/`
 
-## 7. Workshopens vigtigste spørgsmål
+## 7. Runner-konfiguration
+
+`workflow.json` vælger standardrunner og CLI-indstillinger:
+
+```json
+{
+  "runners": {
+    "default": "codex",
+    "codex": {
+      "executable": "codex",
+      "model": "gpt-5.5",
+      "sandbox": "workspace-write"
+    },
+    "claude": {
+      "executable": "claude",
+      "model": "sonnet",
+      "outputFormat": "stream-json",
+      "permissionMode": "acceptEdits",
+      "verbose": true
+    }
+  }
+}
+```
+
+Begge runners får samme prompt og samme handoff-kontekst. Forskellen er kun den lokale CLI, der udfører agenten.
+
+Claude Code kører som standard med `stream-json` og `--verbose`, fordi `--print` i almindelig teksttilstand ofte først skriver output til sidst. `permissionMode: "acceptEdits"` gør headless-kørsler bedre egnet til at oprette og rette workshopartefakter uden at stoppe ved almindelige filredigeringer.
+
+## 8. Workshopens vigtigste spørgsmål
 
 Når en agent har kørt, så spørg:
 
