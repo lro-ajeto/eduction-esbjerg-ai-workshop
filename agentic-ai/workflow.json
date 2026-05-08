@@ -1,0 +1,113 @@
+{
+  "title": "Agentic AI workshop - screen-based migration quality flow",
+  "validatedCodexCli": "0.128.0",
+  "defaultSandbox": "workspace-write",
+  "runners": {
+    "default": "codex",
+    "codex": {
+      "executable": "codex",
+      "model": "gpt-5.5",
+      "sandbox": "workspace-write"
+    },
+    "claude": {
+      "executable": "claude",
+      "model": "sonnet",
+      "outputFormat": "stream-json",
+      "permissionMode": "acceptEdits",
+      "verbose": true
+    }
+  },
+  "reviewLoop": [
+    "03-generate-code",
+    "04-generate-tests",
+    "05-review-fix"
+  ],
+  "context": [
+    "context/kontekst.md",
+    "context/quality-contract.md"
+  ],
+  "agents": [
+    {
+      "id": "01-collection",
+      "name": "Indlæsning",
+      "prompt": "agents/01-collection/prompt.md",
+      "perScreen": false,
+      "writes": [
+        "agentic-ai/work-products/01-collection.md",
+        "agentic-ai/screens/*/screen.json",
+        "agentic-ai/screens/*/forms",
+        "agentic-ai/screens/*/docs"
+      ]
+    },
+    {
+      "id": "02-generate-spec",
+      "name": "Spec-generering",
+      "prompt": "agents/02-generate-spec/prompt.md",
+      "perScreen": true,
+      "requires": [
+        "agentic-ai/work-products/01-collection.md",
+        "agentic-ai/screens/{screen}/screen.json"
+      ],
+      "writes": [
+        "agentic-ai/screens/{screen}/work-products/02-spec.md"
+      ]
+    },
+    {
+      "id": "03-generate-code",
+      "name": "Kode-generering",
+      "prompt": "agents/03-generate-code/prompt.md",
+      "perScreen": true,
+      "requires": [
+        "agentic-ai/screens/{screen}/screen.json",
+        "agentic-ai/screens/{screen}/work-products/02-spec.md"
+      ],
+      "writes": [
+        "migrerings-projekt",
+        "agentic-ai/screens/{screen}/work-products/03-implementation.md"
+      ]
+    },
+    {
+      "id": "04-generate-tests",
+      "name": "Test-generering",
+      "prompt": "agents/04-generate-tests/prompt.md",
+      "perScreen": true,
+      "requires": [
+        "agentic-ai/screens/{screen}/work-products/02-spec.md",
+        "agentic-ai/screens/{screen}/work-products/03-implementation.md"
+      ],
+      "writes": [
+        "migrerings-projekt/src/test",
+        "agentic-ai/screens/{screen}/work-products/04-test-plan.md"
+      ]
+    },
+    {
+      "id": "05-review-fix",
+      "name": "Review-fix",
+      "prompt": "agents/05-review-fix/prompt.md",
+      "perScreen": true,
+      "requires": [
+        "agentic-ai/screens/{screen}/work-products/02-spec.md",
+        "agentic-ai/screens/{screen}/work-products/03-implementation.md",
+        "agentic-ai/screens/{screen}/work-products/04-test-plan.md"
+      ],
+      "writes": [
+        "agentic-ai/screens/{screen}/review/review-findings.md",
+        "agentic-ai/screens/{screen}/review/review-status.json",
+        "agentic-ai/screens/{screen}/work-products/05-review-fix.md"
+      ]
+    },
+    {
+      "id": "06-orchestrator",
+      "name": "Orkestrator",
+      "script": "agents/06-orchestrator/orchestrator.py",
+      "perScreen": false,
+      "requires": [
+        "agentic-ai/work-products/01-collection.md",
+        "agentic-ai/screens/*/screen.json"
+      ],
+      "writes": [
+        "agentic-ai/work-products/06-orchestrator-summary.md"
+      ]
+    }
+  ]
+}
