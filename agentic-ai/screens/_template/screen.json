@@ -1,20 +1,5 @@
 {
   "id": "screen-id",
   "title": "Skærmbilledetitel",
-  "status": "loaded",
-  "metadataTodo": {
-    "exercise": "TODO: Tilføj de metadatafelter deltagerne mener er nødvendige ud over minimum.",
-    "candidateFields": [
-      "priority",
-      "legacy",
-      "target",
-      "dependencies",
-      "businessRules",
-      "risks",
-      "openQuestions",
-      "clarifications",
-      "artefacts",
-      "recommendedNextAgent"
-    ]
-  }
+  "status": "loaded"
 }
